@@ -29,4 +29,4 @@ Zasób | Opis
 4. ~~Zabezpiecz aplikację przed wyświetlaniem błędów. Zwracaj odpowiednią odpowiedź JSON, ukryj szczegóły błędu, a wyjątek zapisz w dowolnej formie do logu _(priorytet=normalny)_~~ DONE
 5. ~~Zaproponuj format dokumentacji API aplikacji _(priorytet=niski)_~~ swagger.io
 6. Dodaj możliwość filtrowania umiejętności (`/skills`) po nazwie, np. `?q=programowanie` _(priorytet=normalny)_
-7. Przystosuj zasób umiejętności do obsłużenia dużej ilości zapytań GET _(priorytet=wysoki)_
+7. ~~Przystosuj zasób umiejętności do obsłużenia dużej ilości zapytań GET _(priorytet=wysoki)_~~

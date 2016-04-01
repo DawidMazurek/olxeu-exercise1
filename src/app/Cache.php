@@ -10,7 +10,7 @@ class Cache
     private $path;
     private $data;
 
-    public function __construct($path = '../../runtime/application.cache')
+    public function __construct($path = '../runtime/application.cache')
     {
         $this->path = $path;
         $this->load();
@@ -50,5 +50,10 @@ class Cache
     public function get($key)
     {
         return !empty($this->data[$key]) ? $this->data[$key] : null;
+    }
+
+    public function clear()
+    {
+        $this->data = [];
     }
 }

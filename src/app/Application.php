@@ -39,6 +39,7 @@ class Application
             switch($ex->getStatusCode())
             {
                 case 404:
+                case 401:
                     $errorInfo->code = $ex->getStatusCode();
                     $errorInfo->message = $ex->getMessage();
                     break;
@@ -66,8 +67,19 @@ class Application
         }
     }
 
+    private function baseAuthenticated()
+    {
+        return isset($_SERVER['PHP_AUTH_USER'], $_SERVER['PHP_AUTH_PW'])
+            && $_SERVER['PHP_AUTH_USER'] === 'admin'
+            && $_SERVER['PHP_AUTH_PW'] === 'password';
+    }
+
     private function handleRoute(array $routeInfo)
     {
+        if (!$this->baseAuthenticated())
+        {
+            throw new Exception(401, "Unauthorized");
+        }
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new Exception(404, "Not found");

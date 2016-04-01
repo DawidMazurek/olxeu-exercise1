@@ -2,12 +2,19 @@
 
 namespace naspersclassifieds\olxeu\skills;
 
+use naspersclassifieds\olxeu\app\Cache;
 use naspersclassifieds\olxeu\app\Exception;
 use Zend\Diactoros\Response\JsonResponse;
 use Zend\Diactoros\ServerRequest;
 
 class SkillEndpoint
 {
+
+    private $cache;
+    public function __construct()
+    {
+        $this->cache = new Cache();
+    }
 
     /**
      * @param ServerRequest $request
@@ -41,18 +48,24 @@ class SkillEndpoint
 
     public function getSkill($id)
     {
-        $result = LegacyStorage::find('id="' . filter_var($id, FILTER_SANITIZE_STRING).'"');
+        $result = json_decode($this->cache->get('skill-'.$id));
+        if (empty($result)) {
+            $result = LegacyStorage::find('id="' . filter_var($id, FILTER_SANITIZE_STRING) . '"');
+            $this->cache->set('skill-'.$id, json_encode($result));
+        }
         return new JsonResponse($result);
     }
 
     public function deleteSkill($id)
     {
+        $this->cache->set('skill-'.$id, null);
         $result = LegacyStorage::delete('id="' . filter_var($id, FILTER_SANITIZE_STRING).'"');
         return new JsonResponse(['success' => $result]);
     }
 
     public function deleteAllSkills()
     {
+        $this->cache->clear();
         $result = LegacyStorage::delete(true);
         return new JsonResponse(['success' => $result]);
     }
