@@ -47,15 +47,17 @@ class Db
     /**
      * @param $table
      * @param $bind
+     * @param $where
      * @return bool
      */
-    public static function update($table, $bind)
+    public static function update($table, $bind, $where)
     {
         $keys = implode(', ', array_map(function ($key) {
             return $key . ' = ?';
         }, array_keys($bind)));
-        $statement = self::getConnection()->prepare("UPDATE $table SET $keys");
-        return $statement->execute(array_values($bind));
+        $statement = self::getConnection()->prepare("UPDATE $table SET $keys WHERE $where");
+        $statement->execute(array_values($bind));
+        return $statement->rowCount() > 0;
     }
 
     /**
@@ -68,4 +70,15 @@ class Db
         return self::getConnection()->query("SELECT * FROM $table WHERE $where")->fetchAll();
     }
 
+    /**
+     * @param $table
+     * @param $where
+     * @return \PDOStatement
+     */
+    public static function delete($table, $where)
+    {
+        $statement = self::getConnection()->prepare("DELETE FROM $table WHERE $where");
+        $statement->execute();
+        return $statement->rowCount() > 0;
+    }
 }

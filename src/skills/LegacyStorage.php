@@ -9,6 +9,7 @@ class LegacyStorage
 {
     public static function add($bind)
     {
+        static::create();
         $bind['id'] = Uuid::v4();
         Db::insert(static::getName(), $bind);
         return $bind['id'];
@@ -19,14 +20,19 @@ class LegacyStorage
         return 'skills';
     }
 
-    public static function update($bind)
+    public static function update($bind, $where)
     {
-        return Db::update(static::getName(), $bind);
+        return Db::update(static::getName(), $bind, $where);
     }
 
     public static function find($where)
     {
         return Db::query(self::getName(), $where);
+    }
+
+    public static function delete($where)
+    {
+        return Db::delete(self::getName(), $where);
     }
 
     public static function create()

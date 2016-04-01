@@ -23,7 +23,7 @@ Zasób | Opis
 
 
 ### Zadania
-1. Wykorzystując zastaną implementację przechowywania umiejętności (`LegacyStorage`), dodaj możliwość dodawania, przeglądania, aktualizowania i usuwania umiejętności _(priorytet=wysoki)_
+1. ~~Wykorzystując zastaną implementację przechowywania umiejętności (`LegacyStorage`), dodaj możliwość dodawania, przeglądania, aktualizowania i usuwania umiejętności _(priorytet=wysoki)_~~
 2. Dodaj możliwość dodawania, przeglądania i usuwania relacji umiejętności z użytkownikiem _(priorytet=normalny)_
 3. Dodaj zebezpiecznie _Basic access authentication_ do aplikacji _(priorytet=normalny)_
 4. ~~Zabezpiecz aplikację przed wyświetlaniem błędów. Zwracaj odpowiednią odpowiedź JSON, ukryj szczegóły błędu, a wyjątek zapisz w dowolnej formie do logu _(priorytet=normalny)_~~ DONE
