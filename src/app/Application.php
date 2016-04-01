@@ -5,6 +5,8 @@ namespace naspersclassifieds\olxeu\app;
 use FastRoute\Dispatcher;
 use FastRoute\RouteCollector;
 use Psr\Http\Message\ResponseInterface;
+use stdClass;
+use Zend\Diactoros\Response;
 use Zend\Diactoros\Response\EmptyResponse;
 use Zend\Diactoros\ServerRequestFactory;
 use function FastRoute\simpleDispatcher;
@@ -27,6 +29,45 @@ class Application
     public function run()
     {
         $routeInfo = $this->dispatcher->dispatch($this->request->getMethod(), $this->request->getUri()->getPath());
+        $response = '';
+        try {
+            $response = $this->handleRoute($routeInfo);
+        }
+        catch(Exception $ex) {
+            $errorInfo = new stdClass();
+
+            switch($ex->getStatusCode())
+            {
+                case 404:
+                    $errorInfo->code = $ex->getStatusCode();
+                    $errorInfo->message = $ex->getMessage();
+                    break;
+
+                default:
+                    $errorInfo->code = 0;
+                    $errorInfo->message = 'Error occured';
+            }
+            $response = new Response\JsonResponse($errorInfo);
+        }
+        catch(\Exception $ex) {
+            $errorInfo = new stdClass();
+            $errorInfo->code = 0;
+            $errorInfo->message = 'Error occured';
+            $response = new Response\JsonResponse($errorInfo);
+
+            error_log(
+                "Unhandled exception " . get_class($ex).
+                " occured in {$ex->getFile()}:{$ex->getLine()}." .
+                " Message: {$ex->getMessage()}, code: {$ex->getCode()}"
+            );
+        }
+        finally {
+            $this->output($response ?: new EmptyResponse());
+        }
+    }
+
+    private function handleRoute(array $routeInfo)
+    {
         switch ($routeInfo[0]) {
             case Dispatcher::NOT_FOUND:
                 throw new Exception(404, "Not found");
@@ -37,13 +78,11 @@ class Application
                 $pathVariables = $routeInfo[2];
                 $pathVariables[] = $this->request;
                 $handler = new $handlerClass();
-                $response = call_user_func_array([$handler, $handlerAction], $pathVariables);
+                return call_user_func_array([$handler, $handlerAction], $pathVariables);
                 break;
             default:
                 throw new Exception("Unexpected state");
         }
-
-        $this->output($response ?: new EmptyResponse());
     }
 
     public function output(ResponseInterface $response)

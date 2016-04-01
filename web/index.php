@@ -1,6 +1,7 @@
 <?php
 
 include "../vendor/autoload.php";
+ini_set('display_errors', 'off');
 
 use naspersclassifieds\olxeu\app\Application;
 
